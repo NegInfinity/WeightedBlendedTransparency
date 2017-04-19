@@ -1,0 +1,25 @@
+			struct TransparentFrag{
+				float4 col: COLOR;
+				float4 col1: COLOR1;
+			};
+			
+			FragInfo encodeColorInfo(float4 color, float z){
+				float weight =  
+					max(min(1.0, max(max(color.r, color.g), color.b) * color.a), color.a) *
+      				clamp(0.03 / (0.00001 + pow(z / 200, 4.0)), 0.01, 3000);
+ 
+ 				FragOut result;
+ 				//GL_ONE GL_ONE
+ 				result.col = float4(color.xyz*color.w, color.w)*weight;//finalColor;
+ 				
+ 				//GL_ZERO, GL_ONE_MINUS_SRC_ALPHA
+ 				result.col1 = color.w;
+ 				return result;
+			}
+			
+			/*
+			vec4 accum = texelFetch(RT0, int2(gl_FragCoord.xy), 0);
+			float reveal = texelFetch(RT1, int2(gl_FragCoord.xy), 0).r;
+			// Blend Func: GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA
+			gl_FragColor = vec4(accum.rgb / max(accum.a, 1eÅ]5), reveal);
+			*/
